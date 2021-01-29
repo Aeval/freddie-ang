@@ -1,0 +1,32 @@
+{
+  "title": "Tasks",
+  "entity": "task",
+  "api": {
+    "url": "http://localhost:8080/api/tasks"
+  },
+  "filter": ["taskName", "taskDone", "dueDate"],
+  "fields": [
+    {
+      "name": "id",
+      "label": "Id",
+      "isId": true,
+      "readonly": true,
+      "type": "string"
+    },
+    {
+      "name": "taskName",
+      "type": "string",
+      "label": "Title"
+    },
+    {
+      "name": "taskDone",
+      "type": "boolean",
+      "label": "Done"
+    },
+    {
+      "name": "dueDate",
+      "type": "string",
+      "label": "Due"
+    }
+  ]
+}
