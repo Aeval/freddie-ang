@@ -6,12 +6,17 @@ import { TaskListComponent } from './task-list/task-list.component';
 import { TaskEditComponent } from './task-edit/task-edit.component';
 import { TaskService } from './task.service';
 import { TASK_ROUTES } from './task.routes';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSliderModule } from '@angular/material/slider';
+
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule.forChild(TASK_ROUTES)
+    RouterModule.forChild(TASK_ROUTES),
+    MatButtonModule,
+    MatSliderModule,
   ],
   declarations: [
     TaskListComponent,
