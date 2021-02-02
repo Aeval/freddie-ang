@@ -6,42 +6,38 @@ import { HomeComponent } from './home/home.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { OKTA_CONFIG, OktaAuthModule } from '@okta/okta-angular';
 import { AuthInterceptor } from './shared/okta/auth.interceptor';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSliderModule } from '@angular/material/slider';
 
 const oktaConfig = {
   issuer: 'https://dev-40771037.okta.com/oauth2/default',
   redirectUri: '/callback',
   clientId: '0oa4nh7a10oiqzBuu5d6',
-  scopes: ['openid', 'profile']
+  scopes: ['openid', 'profile'],
 };
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
   },
   {
     path: 'callback',
-    component: OktaCallbackComponent
-  }
+    component: OktaCallbackComponent,
+  },
 ];
 
 @NgModule({
-  declarations: [
-    HomeComponent
-  ],
+  declarations: [HomeComponent],
   imports: [
     CommonModule,
     HttpClientModule,
     OktaAuthModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
   ],
   providers: [
     { provide: OKTA_CONFIG, useValue: oktaConfig },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AuthRoutingModule { }
+export class AuthRoutingModule {}

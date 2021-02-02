@@ -8,7 +8,9 @@ import { TaskService } from './task.service';
 import { TASK_ROUTES } from './task.routes';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
-
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   imports: [
@@ -17,12 +19,12 @@ import { MatSliderModule } from '@angular/material/slider';
     RouterModule.forChild(TASK_ROUTES),
     MatButtonModule,
     MatSliderModule,
+    MatCardModule,
+    MatTableModule,
+    MatFormFieldModule,
   ],
-  declarations: [
-    TaskListComponent,
-    TaskEditComponent
-  ],
+  declarations: [TaskListComponent, TaskEditComponent],
   providers: [TaskService],
-  exports: []
+  exports: [MatTableModule],
 })
-export class TaskModule { }
+export class TaskModule {}

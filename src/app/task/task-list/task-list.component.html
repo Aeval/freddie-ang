@@ -1,90 +1,104 @@
-<ol class="breadcrumb float-right">
-  <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-  <li class="breadcrumb-item active">Tasks</li>
-</ol>
-<div class="card">
-  <div class="header">
-    <h2 class="title">Tasks List</h2>
-  </div>
-  <div class="content">
-    <form #f="ngForm">
-      <div class="form-group">
-        <label for="taskName">Title:</label>
-        <input
-          [(ngModel)]="filter.taskName"
-          id="taskName"
-          name="taskName"
-          class="form-control"
-        />
-      </div>
+<div id="task-list-wrapper">
+  <button
+    style="float: right; margin: 15px 15px; color: #fff"
+    mat-button
+    (click)="oktaAuth.signOut()"
+  >
+    Logout
+  </button>
+  <div class="card">
+    <div class="header">
+      <h2 class="title">Tasks List</h2>
+    </div>
+    <div class="content">
+      <form #f="ngForm">
+        <div class="form-group">
+          <label for="taskName">Title:</label>
+          <input
+            [(ngModel)]="filter.taskName"
+            id="taskName"
+            name="taskName"
+            class="form-control"
+          />
+        </div>
 
-      <div class="form-group">
-        <label for="taskDone">Done:</label>
-        <input
-          [(ngModel)]="filter.taskDone"
-          id="taskDone"
-          name="taskDone"
-          class="form-control"
-        />
-      </div>
+        <div class="form-group">
+          <label for="taskDone">Done:</label>
+          <input
+            [(ngModel)]="filter.taskDone"
+            id="taskDone"
+            name="taskDone"
+            class="form-control"
+          />
+        </div>
 
-      <div class="form-group">
-        <label for="dueDate">Due:</label>
-        <input
-          [(ngModel)]="filter.dueDate"
-          id="dueDate"
-          type="date"
-          name="dueDate"
-          class="form-control"
-        />
-      </div>
+        <div class="form-group">
+          <label for="dueDate">Due:</label>
+          <input
+            [(ngModel)]="filter.dueDate"
+            id="dueDate"
+            type="date"
+            name="dueDate"
+            class="form-control"
+          />
+        </div>
 
-      <button
-        mat-raised-button
-        (click)="search()"
-        [disabled]="!f?.valid"
-        class="btn btn-primary"
-      >
-        Search
-      </button>
-      <a [routerLink]="['../tasks', 'new']" class="btn btn-default">New</a>
-    </form>
-  </div>
-</div>
-<div class="card" *ngIf="taskList.length > 0">
-  <div *ngIf="feedback" class="alert alert-{{ feedback.type }}">
-    {{ feedback.message }}
-  </div>
-  <div class="table-responsive">
-    <table class="table table-centered table-hover mb-0" id="datatable">
-      <thead>
-        <tr>
-          <th class="border-top-0" scope="col">Id</th>
-          <th class="border-top-0" scope="col">Title</th>
-          <th class="border-top-0" scope="col">Done</th>
-          <th class="border-top-0" scope="col">Due</th>
-          <th class="border-top-0" scope="col" style="width: 120px"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="let item of taskList"
-          [class.active]="item === selectedTask"
+        <button
+          mat-raised-button
+          (click)="filterList()"
+          [disabled]="!f?.valid"
+          class="btn btn-primary"
         >
-          <td>{{ item.id }}</td>
-          <td>{{ item.taskName }}</td>
-          <td>{{ item.taskDone }}</td>
-          <td>{{ item.dueDate }}</td>
-          <td style="white-space: nowrap">
-            <a [routerLink]="['../tasks', item.id]" class="btn btn-secondary"
-              >Edit</a
-            >&nbsp;
-            <button (click)="delete(item)" class="btn btn-danger">
-              Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          Search
+        </button>
+        <a [routerLink]="['../tasks', 'new']" class="btn btn-default">New</a>
+      </form>
+    </div>
   </div>
+
+  <!-- <mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input
+      matInput
+      (keyup)="applyFilter($event)"
+      placeholder="Ex. ium"
+      #input
+    />
+  </mat-form-field> -->
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!-- Position Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let task">{{ task.id }}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Task Name</th>
+      <td mat-cell *matCellDef="let task">{{ task.taskName }}</td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="done">
+      <th mat-header-cell *matHeaderCellDef>Done?</th>
+      <td mat-cell *matCellDef="let task">{{ task.taskDone }}</td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="due">
+      <th mat-header-cell *matHeaderCellDef>Due</th>
+      <td mat-cell *matCellDef="let task">{{ task.dueDate }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+    <!-- Row shown when there is no matching data. -->
+    <!-- <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">
+        No data matching the filter "{{ input.value }}"
+      </td>
+    </tr> -->
+  </table>
 </div>
