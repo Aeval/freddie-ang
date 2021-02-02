@@ -11,6 +11,9 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   imports: [
@@ -22,6 +25,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatCardModule,
     MatTableModule,
     MatFormFieldModule,
+    MatPaginatorModule,
+    MatCheckboxModule,
+    MatIconModule,
   ],
   declarations: [TaskListComponent, TaskEditComponent],
   providers: [TaskService],

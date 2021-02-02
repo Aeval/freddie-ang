@@ -33,51 +33,15 @@ export class TaskService {
   }
 
   find(filter: TaskFilter): Observable<Task[]> {
-    const userTasks = 'http://localhost:8080/user/tasks';
-    return this.http.get<Task[]>(userTasks, { headers });
-  }
-
-  filterList(filter: TaskFilter): void {
     const params = {
       taskName: filter.taskName,
       taskDone: filter.taskDone,
       dueDate: filter.dueDate,
+      pageIndex: filter.pageIndex.toString(),
+      pageSize: filter.pageSize.toString(),
     };
-
-    let orgTasklist = JSON.parse(sessionStorage.getItem('tasks'));
-    console.log(orgTasklist);
-
-    function isInFilter(task) {
-      console.log(this.taskDone);
-      let containsName =
-        task.taskName.includes(this.taskName) && this.taskName != '';
-      let containsDone =
-        task.taskDone.toString().includes(this.taskDone) && this.taskDone != '';
-      let containsDate =
-        task.dueDate.includes(this.dueDate) && this.dueDate != '';
-
-      console.log(containsName);
-      console.log(containsDone);
-      console.log(containsDate);
-
-      if (
-        (containsName && containsDone && containsDate) ||
-        (containsName && !containsDone && !containsDate) ||
-        (!containsName && containsDone && !containsDate) ||
-        (!containsName && !containsDone && containsDate)
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    if (!params.taskName && !params.dueDate && !params.taskDone) {
-      return;
-    } else {
-      console.log(orgTasklist);
-      let newTaskList = orgTasklist.filter(isInFilter, params);
-      this.taskList = newTaskList;
-    }
+    const userTasks = 'http://localhost:8080/user/tasks';
+    return this.http.get<Task[]>(userTasks, { params, headers });
   }
 
   save(entity: Task): Observable<Task> {
