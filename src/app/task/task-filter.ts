@@ -4,4 +4,5 @@ export class TaskFilter {
   dueDate = '';
   pageSize: number = 1;
   pageIndex: number = 0;
+  sortDirection = 'asc';
 }

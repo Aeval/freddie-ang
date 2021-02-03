@@ -1,14 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TaskFilter } from '../task-filter';
 import { TaskService } from '../task.service';
 import { Task } from '../task';
 import { OktaAuthService } from '@okta/okta-angular';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, fromEvent, merge, Observable, of } from 'rxjs';
 import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
-import { catchError, finalize, tap } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  finalize,
+  tap,
+} from 'rxjs/operators';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-task',
@@ -20,6 +26,8 @@ export class TaskListComponent implements OnInit {
   selectedTask: Task;
   feedback: any = {};
 
+  userName: String;
+
   tasks: Task[];
   dataSource: TaskDataSource;
   displayedColumns = ['done', 'name', 'due', 'delete'];
@@ -29,11 +37,12 @@ export class TaskListComponent implements OnInit {
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('input') input: ElementRef;
 
   constructor(
     private taskService: TaskService,
-    public oktaAuth: OktaAuthService,
-    private route: ActivatedRoute
+    public oktaAuth: OktaAuthService
   ) {}
 
   ngOnInit() {
@@ -43,15 +52,34 @@ export class TaskListComponent implements OnInit {
     this.dataSource = new TaskDataSource(this.taskService);
   }
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
+    const userClaims = await this.oktaAuth.getUser();
+    this.userName = userClaims.name;
+
+    fromEvent(this.input.nativeElement, 'keyup')
+      .pipe(
+        debounceTime(150),
+        distinctUntilChanged(),
+        tap(() => {
+          this.paginator.pageIndex = 0;
+          this.loadTasksPage();
+        })
+      )
+      .subscribe();
+
     this.filter.pageSize = this.paginator.pageSize;
-    this.paginator.page.pipe(tap(() => this.loadTasksPage())).subscribe();
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    merge(this.paginator.page, this.sort.sortChange)
+      .pipe(tap(() => this.loadTasksPage()))
+      .subscribe();
     this.dataSource.loadTasks(this.filter);
   }
 
   loadTasksPage() {
+    this.filter.sortDirection = this.sort.direction;
     this.filter.pageSize = this.paginator.pageSize;
     this.filter.pageIndex = this.paginator.pageIndex;
+    this.filter.taskName = this.input.nativeElement.value;
     this.dataSource.loadTasks(this.filter);
   }
 

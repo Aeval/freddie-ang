@@ -3,7 +3,6 @@ import { TaskFilter } from './task-filter';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 
 const headers = new HttpHeaders().set('Accept', 'application/json');
 
@@ -39,6 +38,7 @@ export class TaskService {
       dueDate: filter.dueDate,
       pageIndex: filter.pageIndex.toString(),
       pageSize: filter.pageSize.toString(),
+      sortDirection: filter.sortDirection,
     };
     const userTasks = 'http://localhost:8080/user/tasks';
     return this.http.get<Task[]>(userTasks, { params, headers });

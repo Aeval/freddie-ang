@@ -21,3 +21,17 @@ mat-paginator {
   width: 80%;
   margin: 0 auto;
 }
+
+mat-form-field {
+  width: 33%;
+  margin: 50px 33%;
+  font-size: large;
+}
+
+::ng-deep .mat-form-field-underline {
+  background-color: #fff !important;
+}
+
+#newBtn {
+  margin: 50px 45%;
+}

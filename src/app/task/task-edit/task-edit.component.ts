@@ -8,10 +8,9 @@ import { of } from 'rxjs';
 
 @Component({
   selector: 'app-task-edit',
-  templateUrl: './task-edit.component.html'
+  templateUrl: './task-edit.component.html',
 })
 export class TaskEditComponent implements OnInit {
-
   id: string;
   task: Task;
   feedback: any = {};
@@ -19,41 +18,42 @@ export class TaskEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private taskService: TaskService) {
-  }
+    private taskService: TaskService
+  ) {}
 
   ngOnInit() {
-    this
-      .route
-      .params
+    this.route.params
       .pipe(
-        map(p => p.id),
-        switchMap(id => {
-          if (id === 'new') { return of(new Task()); }
+        map((p) => p.id),
+        switchMap((id) => {
+          if (id === 'new') {
+            return of(new Task());
+          }
           return this.taskService.findById(id);
         })
       )
-      .subscribe(task => {
+      .subscribe(
+        (task) => {
           this.task = task;
           this.feedback = {};
         },
-        err => {
-          this.feedback = {type: 'warning', message: 'Error loading'};
+        (err) => {
+          this.feedback = { type: 'warning', message: 'Error loading' };
         }
       );
   }
 
   save() {
     this.taskService.save(this.task).subscribe(
-      task => {
+      (task) => {
         this.task = task;
-        this.feedback = {type: 'success', message: 'Save was successful!'};
+        this.feedback = { type: 'success', message: 'Save was successful!' };
         setTimeout(() => {
           this.router.navigate(['/tasks']);
         }, 1000);
       },
-      err => {
-        this.feedback = {type: 'warning', message: 'Error saving'};
+      (err) => {
+        this.feedback = { type: 'warning', message: 'Error saving' };
       }
     );
   }

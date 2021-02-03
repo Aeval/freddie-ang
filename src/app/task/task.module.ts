@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSortModule } from '@angular/material/sort';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   imports: [
@@ -28,6 +30,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatPaginatorModule,
     MatCheckboxModule,
     MatIconModule,
+    MatSortModule,
+    MatInputModule,
   ],
   declarations: [TaskListComponent, TaskEditComponent],
   providers: [TaskService],
