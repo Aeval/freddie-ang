@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { TaskFilter } from '../task-filter';
 import { TaskService } from '../task.service';
 import { Task } from '../task';
@@ -15,22 +21,34 @@ import {
 } from 'rxjs/operators';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { DatePipe } from '@angular/common';
+
+interface Status {
+  value: string;
+  viewValue: string;
+}
 
 @Component({
   selector: 'app-task',
   templateUrl: 'task-list.component.html',
   styleUrls: ['./task-list.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class TaskListComponent implements OnInit {
   filter = new TaskFilter();
   selectedTask: Task;
   feedback: any = {};
+  statuses: Status[] = [
+    { value: '', viewValue: 'All' },
+    { value: 'true', viewValue: 'Done' },
+    { value: 'false', viewValue: 'Not Done' },
+  ];
 
   userName: String;
 
   tasks: Task[];
   dataSource: TaskDataSource;
-  displayedColumns = ['done', 'name', 'due', 'delete'];
+  displayedColumns = ['done', 'name', 'due', 'delete', 'edit'];
 
   get taskList(): Task[] {
     return this.taskService.taskList;
@@ -42,7 +60,8 @@ export class TaskListComponent implements OnInit {
 
   constructor(
     private taskService: TaskService,
-    public oktaAuth: OktaAuthService
+    public oktaAuth: OktaAuthService,
+    public datepipe: DatePipe
   ) {}
 
   ngOnInit() {
@@ -53,9 +72,7 @@ export class TaskListComponent implements OnInit {
   }
 
   async ngAfterViewInit() {
-    const userClaims = await this.oktaAuth.getUser();
-    this.userName = userClaims.name;
-
+    this.userName = sessionStorage.getItem('username');
     fromEvent(this.input.nativeElement, 'keyup')
       .pipe(
         debounceTime(150),
@@ -87,6 +104,22 @@ export class TaskListComponent implements OnInit {
     this.selectedTask = selected;
   }
 
+  filterByDone(selection: string): void {
+    this.filter.taskDone = selection;
+    this.paginator.pageIndex = 0;
+    this.loadTasksPage();
+  }
+
+  updateDone(task: Task): void {
+    console.log(task);
+    this.save(task);
+  }
+
+  edit(task: Task): void {
+    this.select(task);
+    console.log(this.selectedTask);
+  }
+
   delete(task: Task): void {
     if (confirm('Are you sure?')) {
       this.taskService.delete(task).subscribe(
@@ -105,6 +138,22 @@ export class TaskListComponent implements OnInit {
         }
       );
     }
+  }
+
+  save(task: Task): void {
+    let formattedDate = this.datepipe.transform(task.dueDate, 'yyyy-MM-dd');
+    task.dueDate = formattedDate;
+    if (this.selectedTask) {
+      this.selectedTask = new Task();
+    }
+    this.taskService.save(task).subscribe(
+      (task) => {
+        this.feedback = { type: 'success', message: 'Save was successful!' };
+      },
+      (err) => {
+        this.feedback = { type: 'warning', message: 'Error saving' };
+      }
+    );
   }
 }
 

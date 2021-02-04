@@ -16,6 +16,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { DatePipe } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   imports: [
@@ -32,9 +36,12 @@ import { MatInputModule } from '@angular/material/input';
     MatIconModule,
     MatSortModule,
     MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
   ],
   declarations: [TaskListComponent, TaskEditComponent],
-  providers: [TaskService],
+  providers: [TaskService, DatePipe],
   exports: [MatTableModule],
 })
 export class TaskModule {}

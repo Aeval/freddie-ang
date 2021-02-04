@@ -14,9 +14,9 @@
     Logout
   </button>
 
-  <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+  <!-- <div class="spinner-container" *ngIf="dataSource.loading$ | async">
     <mat-spinner></mat-spinner>
-  </div>
+  </div> -->
 
   <mat-form-field>
     <mat-label style="color: #fff">Search for a task...</mat-label>
@@ -32,29 +32,92 @@
     matSortDirection="asc"
     matSortDisableClear
   >
+    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
     <!-- Name Column -->
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Task Name</th>
-      <td mat-cell *matCellDef="let task">{{ task.taskName }}</td>
+      <td mat-cell *matCellDef="let task">
+        <input
+          matInput
+          *ngIf="selectedTask && selectedTask.id == task.id; else taskName"
+          [(ngModel)]="task.taskName"
+          (keyup)="$event.keyCode === 13 && save(task)"
+        />
+        <ng-template #taskName>{{ task.taskName }}</ng-template>
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="done">
-      <th mat-header-cell *matHeaderCellDef>Done?</th>
+      <th style="width: 100px" mat-header-cell *matHeaderCellDef>
+        <mat-form-field appearance="fill">
+          <mat-label>Status</mat-label>
+          <mat-select
+            #chosenVal
+            (selectionChange)="filterByDone(chosenVal.value)"
+          >
+            <mat-option *ngFor="let status of statuses" [value]="status.value">
+              {{ status.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </th>
       <td mat-cell *matCellDef="let task">
-        <mat-checkbox [(ngModel)]="task.taskDone"></mat-checkbox>
+        <mat-checkbox
+          [(ngModel)]="task.taskDone"
+          (ngModelChange)="updateDone(task)"
+        ></mat-checkbox>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="due">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Due</th>
-      <td mat-cell *matCellDef="let task">{{ task.dueDate }}</td>
+      <td mat-cell *matCellDef="let task">
+        <div *ngIf="selectedTask && selectedTask.id == task.id; else dueDate">
+          <input
+            matInput
+            required
+            id="dueDate"
+            name="dueDate"
+            [(ngModel)]="task.dueDate"
+            (ngModelChange)="save(task)"
+            [matDatepicker]="picker"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </div>
+        <ng-template #dueDate>{{ task.dueDate }}</ng-template>
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="delete">
-      <th mat-header-cell *matHeaderCellDef>Delete</th>
-      <td mat-cell *matCellDef="let task">
+      <th style="text-align: center" mat-header-cell *matHeaderCellDef>
+        Delete
+      </th>
+      <td
+        style="text-align: center; width: 50px"
+        mat-cell
+        *matCellDef="let task"
+      >
         <button (click)="delete(task)" mat-mini-fab color="warn">
           <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+      <th style="text-align: center" mat-header-cell *matHeaderCellDef>Edit</th>
+      <td
+        style="text-align: center; width: 50px"
+        mat-cell
+        *matCellDef="let task"
+      >
+        <button (click)="edit(task)" mat-mini-fab color="accent">
+          <mat-icon>edit</mat-icon>
         </button>
       </td>
     </ng-container>

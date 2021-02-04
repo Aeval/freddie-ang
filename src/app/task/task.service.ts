@@ -19,18 +19,6 @@ export class TaskService {
     return this.http.get<Task>(url, { params, headers });
   }
 
-  load(filter: TaskFilter): void {
-    this.find(filter).subscribe(
-      (result) => {
-        this.taskList = result;
-        sessionStorage.setItem('tasks', JSON.stringify(result));
-      },
-      (err) => {
-        console.error('error loading', err);
-      }
-    );
-  }
-
   find(filter: TaskFilter): Observable<Task[]> {
     const params = {
       taskName: filter.taskName,
@@ -48,7 +36,7 @@ export class TaskService {
     let params = new HttpParams();
     let url = '';
     if (entity.id) {
-      url = `${this.api}/${entity.id.toString()}`;
+      url = `${this.api}`;
       params = new HttpParams().set('ID', entity.id.toString());
       return this.http.put<Task>(url, entity, { headers, params });
     } else {

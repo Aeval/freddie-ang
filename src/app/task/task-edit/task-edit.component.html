@@ -1,37 +1,75 @@
-<ol class="breadcrumb float-right">
-  <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-  <li class="breadcrumb-item active">Tasks</li>
-</ol>
-<div class="card">
-  <div class="header">
-    <h2 class="title">Tasks Detail</h2>
-  </div>
-  <div class="content">
-    <div *ngIf="feedback" class="alert alert-{{feedback.type}}">{{ feedback.message }}</div>
-    <form *ngIf="task" #editForm="ngForm" (ngSubmit)="save()">
-    
-      <div class="form-group">
-        <label>Id</label>
-        {{task.id || 'n/a'}} 
-      </div>
-    
-      <div class="form-group">
-        <label for="taskName">Title</label>
-        <input [(ngModel)]="task.taskName" id="taskName" name="taskName" class="form-control">
-      </div>
-    
-      <div class="form-group">
-        <label for="taskDone">Done</label>
-        <input [(ngModel)]="task.taskDone" id="taskDone" name="taskDone" class="form-control">
-      </div>
-    
-      <div class="form-group">
-        <label for="dueDate">Due</label>
-        <input [(ngModel)]="task.dueDate" id="dueDate" name="dueDate" class="form-control">
-      </div>
-    
-      <button type="submit" class="btn btn-primary" [disabled]="!editForm.form.valid">Save</button>
-      <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
-    </form>
-  </div>
+<div id="create-task-wrapper">
+  <button
+    style="float: left; margin: 15px 15px; color: #fff"
+    mat-button
+    [routerLink]="['/']"
+  >
+    Welcome, {{ userName }}!
+  </button>
+  <button
+    style="float: right; margin: 15px 15px; color: #fff"
+    mat-button
+    (click)="oktaAuth.signOut()"
+  >
+    Logout
+  </button>
+
+  <mat-card
+    *ngIf="feedback.message"
+    class="alert alert-card alert-{{ feedback.type }}"
+  >
+    <div>
+      {{ feedback.message }}
+    </div>
+  </mat-card>
+  <mat-card *ngIf="task">
+    <div class="content">
+      <form #editForm="ngForm" (ngSubmit)="save()">
+        <!-- <div class="form-group">
+          <label>Id</label>
+          {{ task.id || "n/a" }}
+        </div> -->
+        <img id="dogPic" src="../../../assets/peakdog.jpg" alt="" />
+        <mat-form-field>
+          <mat-label for="taskName">What are we getting done?</mat-label>
+          <input
+            [(ngModel)]="task.taskName"
+            matInput
+            required
+            id="taskName"
+            name="taskName"
+          />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>When do you want it done?</mat-label>
+          <input
+            matInput
+            required
+            id="dueDate"
+            name="dueDate"
+            [(ngModel)]="task.dueDate"
+            [matDatepicker]="picker"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <button
+          class="success"
+          mat-raised-button
+          type="submit"
+          [disabled]="!editForm.form.valid"
+        >
+          Save
+        </button>
+        <button mat-raised-button color="warn" type="button" (click)="cancel()">
+          Cancel
+        </button>
+      </form>
+    </div>
+  </mat-card>
 </div>
