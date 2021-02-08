@@ -111,13 +111,14 @@ export class TaskListComponent implements OnInit {
   }
 
   updateDone(task: Task): void {
-    console.log(task);
     this.save(task);
+    setTimeout(() => {
+      this.loadTasksPage();
+    }, 500);
   }
 
   edit(task: Task): void {
     this.select(task);
-    console.log(this.selectedTask);
   }
 
   delete(task: Task): void {
@@ -149,6 +150,7 @@ export class TaskListComponent implements OnInit {
     this.taskService.save(task).subscribe(
       (task) => {
         this.feedback = { type: 'success', message: 'Save was successful!' };
+        this.loadTasksPage();
       },
       (err) => {
         this.feedback = { type: 'warning', message: 'Error saving' };

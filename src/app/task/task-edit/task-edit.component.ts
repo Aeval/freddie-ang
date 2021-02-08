@@ -56,6 +56,7 @@ export class TaskEditComponent implements OnInit {
       'yyyy-MM-dd'
     );
     this.task.dueDate = formattedDate;
+    this.task.taskDone = false;
 
     this.taskService.save(this.task).subscribe(
       (task) => {

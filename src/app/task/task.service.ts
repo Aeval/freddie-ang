@@ -41,7 +41,6 @@ export class TaskService {
       return this.http.put<Task>(url, entity, { headers, params });
     } else {
       url = `${this.api}`;
-      console.log(entity);
       return this.http.post<Task>(url, entity, { headers, params });
     }
   }

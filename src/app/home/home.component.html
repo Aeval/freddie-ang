@@ -1,13 +1,33 @@
-<div>
+<div class="content-wrapper">
   <button
-    mat-button-rasied
-    color="primary"
-    *ngIf="!isAuthenticated"
-    (click)="oktaAuth.signInWithRedirect()"
+    mat-button
+    id="logout"
+    *ngIf="isAuthenticated"
+    (click)="oktaAuth.signOut()"
   >
-    Login
+    Logout
   </button>
-  <button mat-button-raised>Button</button>
-  <p><a routerLink="/tasks" *ngIf="isAuthenticated">View Tasks</a></p>
-  <button *ngIf="isAuthenticated" (click)="oktaAuth.signOut()">Logout</button>
+  <div class="content">
+    <h1 *ngIf="isAuthenticated">Welcome, {{ userName }}!</h1>
+    <h2 *ngIf="isAuthenticated">Your tasks have been waiting for you.</h2>
+    <h1 *ngIf="!isAuthenticated">Don't let your tasks float away from you!</h1>
+    <h2 *ngIf="!isAuthenticated">Login now to start your list</h2>
+    <button
+      id="login"
+      mat-raised-button
+      color="primary"
+      *ngIf="!isAuthenticated"
+      (click)="oktaAuth.signInWithRedirect()"
+    >
+      Login
+    </button>
+    <button
+      mat-raised-button
+      *ngIf="isAuthenticated"
+      color="accent"
+      [routerLink]="['/tasks']"
+    >
+      View your tasks!
+    </button>
+  </div>
 </div>

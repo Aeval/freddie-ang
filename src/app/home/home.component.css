@@ -1,6 +1,29 @@
-div {
+.content-wrapper {
   background-image: url("../../assets/dlanham-SpaceDoggy.jpg");
   background-size: cover;
   height: 100vh;
   margin: 0;
+}
+
+.content {
+  text-align: center;
+  top: 25%;
+  position: relative;
+}
+
+#login {
+  width: 25%;
+  height: 50px;
+}
+
+#logout {
+  right: 15px;
+  top: 15px;
+  color: #fff;
+  position: absolute;
+}
+
+h1,
+h2 {
+  color: #fff;
 }
